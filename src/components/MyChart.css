@@ -1,0 +1,10 @@
+.myChartActions {
+    display: flex;
+    gap: 20px;
+    /* border: 1px red solid; */
+    justify-content: right;
+    align-content: center;
+}
+
+
+

@@ -1,0 +1,79 @@
+.container {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.insights-header {
+    /* border: 1px black solid; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.insights-header h2 {
+    font-size: 24px;
+    color: #1A1A3F;
+}
+
+
+.insights-cards {
+    /* border: 1px red solid; */
+    display: flex;
+    gap: 20px;
+}
+
+.insight-card {
+    flex: 1 0 20%;
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+
+.icon-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.icon-red {
+    background-color: #FBE9E7;
+}
+
+.icon-orange {
+    background-color: #FFF3E0;
+}
+
+.icon-green {
+    background-color: #E8F5E9;
+}
+
+.insight-title {
+    font-weight: 600;
+    font-size: 18px;
+    color: #1A1A3F;
+    margin-bottom: 5px;
+}
+
+.insight-value {
+    font-size: 16px;
+    color: #6D6D80;
+}
+
+/* Colors for each card */
+.card-red {
+    background-color: #FFEBEE;
+}
+
+.card-orange {
+    background-color: #FFF8E1;
+}
+
+.card-green {
+    background-color: #E8F5E9;
+}
