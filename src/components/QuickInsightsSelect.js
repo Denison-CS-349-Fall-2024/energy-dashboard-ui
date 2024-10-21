@@ -1,35 +1,26 @@
 import React from 'react';
-import { Select, Space } from 'antd';
-const handleChange = (value) => {
-  console.log(`selected ${value}`);
-};
+import Select from '@mui/joy/Select';
+import Option from '@mui/joy/Option';
+
 const QuickInsightsSelect = (props) => {
-    const {quickInsightsType, setQuickInsightsType} = props
+    const {quickInsightsTypes, selectedQuickInsightsId, setSelectedQuickInsightsId} = props
+    
+    const handleChange = (e, newValue) => {
+      setSelectedQuickInsightsId(newValue)
+    }
+
+    if (quickInsightsTypes.length === 0) {
+      return (
+        <div>loading gif</div>
+      )
+    }
 
     return (
-    <Space wrap>
-        <Select
-          defaultValue="Solar"
-          style={{
-            width: 120,
-          }}
-          onChange={handleChange}
-          options={[
-            {
-              value: 'Solar',
-              label: 'Solar',
-            },
-            {
-              value: 'Electric - Grid',
-              label: 'Electric - Grid',
-            },
-            {
-              value: 'Natural Gas',
-              label: 'Natural Gas',
-            },
-          ]}
-        />
-      </Space>
+      <Select defaultValue={selectedQuickInsightsId} onChange={handleChange}>
+        {quickInsightsTypes.map((data) => (
+            <Option value={data.id}>{data.label}</Option>
+        ))}
+    </Select>
       )
 }
 

@@ -64,9 +64,9 @@ const EnergyBarChart = ({ dataset }) => {
   // Helper to generate colors for each dataset
   const getColor = (label) => {
     switch (label) {
-      case 'natural gas': return '#0056b3';
-      case 'solar': return '#218838';
-      case 'electric - grid': return '#c82333';
+      case 'natural gas': return '#0395FF';
+      case 'solar': return '#00E096';
+      case 'electric - grid': return '#8A00FF';
       default: return 'rgba(255, 99, 132, 0.6)';
     }
   };
