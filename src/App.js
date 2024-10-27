@@ -1,122 +1,116 @@
-import './App.css';
-import { useEffect, useRef, useState } from 'react';
-import { SearchBar } from './components/SearchBar';
-import { QuickInsights } from './components/QuickInsights';
-import { MyChart } from './components/MyChart';
-import React  from 'react';
-import { MetaData } from './components/MetaData';
-import { getQuickInsights, getSites } from './api';
+import "./App.css";
+import { useEffect, useRef, useState } from "react";
+import { SearchBar } from "./components/SearchBar";
+import { QuickInsights } from "./components/QuickInsights";
+import { MyChart } from "./components/MyChart";
+import React from "react";
+import { MetaData } from "./components/MetaData";
+import { getQuickInsights, getSampleData, getSites } from "./api";
 
 function App() {
-  const [selectedSite, setSelectedSite] = useState({})
-  const [sites, setSites] = useState([])
-  const [quickInsightsTypes, setQuickInsightsTypes] = useState([])
-  const [selectedQuickInsightsId, setSelectedQuickInsightsId] = useState(null)
-  const [quickInsights, setQuickInsights] = useState({})
-  
-  const [currentChartType, setCurrentChartType] = useState("day")
-  const [chartTime, setChartTime] = useState("2024/10") 
-  
+  const [selectedSite, setSelectedSite] = useState({});
+  const [sites, setSites] = useState([]);
+  const [quickInsightsTypes, setQuickInsightsTypes] = useState([]);
+  const [selectedQuickInsightsId, setSelectedQuickInsightsId] = useState(null);
+  const [quickInsights, setQuickInsights] = useState({});
+
+  const [currentChartType, setCurrentChartType] = useState("M");
+  const [chartTime, setChartTime] = useState("2024/10");
+
+  const [sampleData, setSampleData] = useState([]);
 
   const myChartProps = {
     currentChartType,
     setCurrentChartType,
     chartTime,
-    setChartTime
-  }
+    setChartTime,
+    sampleData,
+  };
 
   const quickInsightsProps = {
     quickInsights,
     quickInsightsTypes,
     selectedQuickInsightsId,
-    setSelectedQuickInsightsId
-  }
+    setSelectedQuickInsightsId,
+  };
 
   const metadataProps = {
-    selectedSite
-  }
+    selectedSite,
+  };
 
   const searchBarProps = {
     sites,
     selectedSite,
-    setSelectedSite
-  }
+    setSelectedSite,
+  };
 
   const inferQuickInsightsTypes = (site) => {
-    const available_data_types = []
+    const available_data_types = [];
     if (site.solarEdgeId) {
       available_data_types.push({
         id: "solar" + "," + site.solarEdgeId,
         label: "Solar",
-        value: site.solarEdgeId
-      })
+        value: site.solarEdgeId,
+      });
     }
 
     if (site.energyStarId) {
       available_data_types.push({
         id: "electricgrid" + "," + site.energyStarId,
         label: "Electric - Grid",
-        value: site.energyStarId
-      })
+        value: site.energyStarId,
+      });
 
       available_data_types.push({
         id: "naturalgas" + "," + site.energyStarId,
         label: "Natural Gas",
-        value: site.energyStarId
-      })
+        value: site.energyStarId,
+      });
     }
 
-    setQuickInsightsTypes(available_data_types)
-    setSelectedQuickInsightsId(available_data_types[0].id)
-  }
-  
+    setQuickInsightsTypes(available_data_types);
+    setSelectedQuickInsightsId(available_data_types[0].id);
+  };
+
   useEffect(() => {
     getSites().then((sites) => {
-      setSites(sites)
-      const firstSite = sites[0]
-      setSelectedSite(firstSite)
-      inferQuickInsightsTypes(firstSite)
+      setSites(sites);
+      const firstSite = sites[0];
+      setSelectedSite(firstSite);
+      inferQuickInsightsTypes(firstSite);
       getQuickInsights().then((data) => {
-        setQuickInsights(data)
-      })
-    })
-    
-  }, [])
-
+        setQuickInsights(data);
+      });
+      setSampleData(getSampleData());
+    });
+  }, []);
 
   useEffect(() => {
     if (selectedSite && Object.keys(selectedSite).length) {
-      console.log("selectedSite:", selectedSite)
-      inferQuickInsightsTypes(selectedSite)
+      console.log("selectedSite:", selectedSite);
+      inferQuickInsightsTypes(selectedSite);
       getQuickInsights().then((data) => {
-        setQuickInsights(data)
-      })
+        setQuickInsights(data);
+      });
+      setSampleData(getSampleData());
     }
-  }, [selectedSite])
-
-  useEffect(() => {
-    if (quickInsightsTypes.length) {
-      console.log("quickInsightsTypes:", quickInsightsTypes)
-    }
-  }, [quickInsightsTypes])
-
+  }, [selectedSite]);
 
   useEffect(() => {
     if (selectedQuickInsightsId) {
       console.log("selectedQuickInsightsId", selectedQuickInsightsId)
       getQuickInsights().then((data) => {
-        setQuickInsights(data)
-      })
+        setQuickInsights(data);
+      });
     }
-  }, [selectedQuickInsightsId])
-
+  }, [selectedQuickInsightsId]);
 
   return (
     <div className="App">
       <div className="header">
         <h1 className="logo">Dashboard</h1>
         <SearchBar {...searchBarProps}></SearchBar>
-        <div className="userActions">Login</div>
+        <div className="userActions">Login (todo)</div>
       </div>
       <div className="body1">
         <QuickInsights {...quickInsightsProps}></QuickInsights>

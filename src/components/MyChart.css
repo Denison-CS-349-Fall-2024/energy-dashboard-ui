@@ -1,10 +1,34 @@
-.myChartActions {
-    display: flex;
-    gap: 20px;
-    /* border: 1px red solid; */
-    justify-content: right;
-    align-content: center;
+.control-panel {
+  display: flex;
+  gap: 20px;
+  /* border: 1px red solid; */
+  justify-content: right;
 }
 
+.button:hover {
+  background-color: #dbeafe;
+}
 
+.button.active {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
 
+.apply-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.apply-button:hover {
+  background-color: #2563eb;
+}
+
+.apply-button:focus {
+  outline: none;
+}

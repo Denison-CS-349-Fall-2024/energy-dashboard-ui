@@ -1,14 +1,14 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: #1a1a3f;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background-color: #F9FAFB;
+  font-family: Arial, sans-serif;
+  background-color: #f9fafb;
 }
-
 
 /* .App > div {
     border: 1px black solid;
@@ -18,52 +18,46 @@ body {
     border: 1px blue solid;
 } */
 
-
-
 .App {
-    /* border: 3px green solid; */
-    display: flex;
-    flex-direction: column;
-    gap: 50px;
-    padding: 40px 60px;
-    height: 100vh;
-    max-height: 100vh;
+  /* border: 3px green solid; */
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding: 40px 60px;
+  height: 100vh;
+  max-height: 100vh;
 }
 
 .header {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 50px;
-    border-radius: 10px;
-    padding: 20px;
-    background-color: white;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 50px;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: white;
 }
 
 .body1 {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 50px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 50px;
 }
 
 .body2 {
-    height: 200px;
-    /* border: 1px black solid; */
-    border-radius: 10px;
-    padding: 20px;
-    background-color: white;
+  height: 200px;
+  /* border: 1px black solid; */
+  border-radius: 10px;
+  padding: 20px;
+  background-color: white;
 }
 
-.logo, .userActions {
-    color: #1A1A3F;
-    font-size: 36px;
-    /* display: flex;
+.logo,
+.userActions {
+  font-size: 36px;
+  /* display: flex;
     justify-content: center;
     align-items: center; */
 }
-
-
-
-
 
 /* Responsive adjustments 
 @media (max-width: 768px) {
