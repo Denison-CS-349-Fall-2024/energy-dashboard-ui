@@ -1,28 +1,29 @@
-import React from "react";
-import { DatePicker, Space } from "antd";
-import dayjs from "dayjs";
+import React from "react"
+import { DatePicker, Space } from "antd"
+import dayjs from "dayjs"
+import { getFullDateInString } from "../helpers"
 
 export const TimePicker = (props) => {
-  const { currentChartType, chartTime, setChartTime } = props;
+  const { chartType, chartDate, setChartDate } = props
 
   const chartTypeMap = {
     D: "",
     M: "month",
     Y: "year",
-  };
+  }
 
   const onChange = (date, dateString) => {
-    setChartTime(dateString);
-  };
+    setChartDate(getFullDateInString(dateString))
+  }
 
   return (
     <Space>
       <DatePicker
-        defaultValue={dayjs(chartTime)}
+        defaultValue={dayjs(chartDate)}
         onChange={onChange}
-        picker={chartTypeMap[currentChartType]}
-        disabled={currentChartType == "All"}
+        picker={chartTypeMap[chartType]}
+        disabled={chartType == "All"}
       />
     </Space>
-  );
-};
+  )
+}

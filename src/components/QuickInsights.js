@@ -1,9 +1,38 @@
-import "./QuickInsights.css";
-import QuickInsightsSelect from "./QuickInsightsSelect";
-import React from "react";
+import { convertKBTUToWh, formatEnergyValue } from "../helpers"
+import "./QuickInsights.css"
+import QuickInsightsSelect from "./QuickInsightsSelect"
+import React from "react"
 
 export const QuickInsights = (props) => {
-  const { quickInsights } = props;
+  const { quickInsights } = props
+
+  let installedOn = quickInsights?.installed_on
+  let recentMonthEnergyWithUnit = `${quickInsights?.recent_month_energy} ${quickInsights?.energy_unit}`
+  let lifetimeEnergyWithUnit = `${quickInsights?.lifetime_energy} ${quickInsights?.energy_unit}`
+
+  if (quickInsights?.energy_unit === "kBtu") {
+    recentMonthEnergyWithUnit = formatEnergyValue(
+      convertKBTUToWh(quickInsights.recent_month_energy)
+    )
+    lifetimeEnergyWithUnit = formatEnergyValue(
+      convertKBTUToWh(quickInsights.lifetime_energy)
+    )
+  } else if (quickInsights?.energy_unit === "Wh") {
+    recentMonthEnergyWithUnit = formatEnergyValue(
+      quickInsights.recent_month_energy
+    )
+    lifetimeEnergyWithUnit = formatEnergyValue(quickInsights.lifetime_energy)
+  }
+
+  if (installedOn === null) {
+    installedOn = "N/A"
+  }
+  if (recentMonthEnergyWithUnit === "null null") {
+    recentMonthEnergyWithUnit = "N/A"
+  }
+  if (lifetimeEnergyWithUnit === "null null") {
+    lifetimeEnergyWithUnit = "N/A"
+  }
 
   return (
     <div className="container">
@@ -48,7 +77,7 @@ export const QuickInsights = (props) => {
             </svg>
           </div>
           <div className="insight-title">Installed on</div>
-          <div className="insight-value">{quickInsights?.installedOn}</div>
+          <div className="insight-value">{installedOn}</div>
         </div>
 
         <div className="insight-card card-orange">
@@ -72,8 +101,8 @@ export const QuickInsights = (props) => {
               </g>
             </svg>
           </div>
-          <div className="insight-title">Energy last month</div>
-          <div className="insight-value">{`${quickInsights?.recentMonthEnergy} ${quickInsights?.energyUnit}`}</div>
+          <div className="insight-title">Recent month energy</div>
+          <div className="insight-value">{recentMonthEnergyWithUnit}</div>
         </div>
 
         <div className="insight-card card-green">
@@ -109,10 +138,10 @@ export const QuickInsights = (props) => {
               </g>
             </svg>
           </div>
-          <div className="insight-title">Lifetime Energy</div>
-          <div className="insight-value">{`${quickInsights?.lifetimeEnergy} ${quickInsights?.energyUnit}`}</div>
+          <div className="insight-title">Lifetime energy</div>
+          <div className="insight-value">{lifetimeEnergyWithUnit}</div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
