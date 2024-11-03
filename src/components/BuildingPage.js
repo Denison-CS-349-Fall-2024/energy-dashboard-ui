@@ -107,11 +107,11 @@ function BuildingPage() {
 
   return (
     <div className="App">
-      <div className="header">
+      {/* <div className="header">
         <h1 className="logo">Dashboard</h1>
         <SearchBar {...searchBarProps}></SearchBar>
         <div className="userActions">Login (todo)</div>
-      </div>
+      </div> */}
       <div className="body1">
         <QuickInsights {...quickInsightsProps}></QuickInsights>
         <MetaData {...metadataProps}></MetaData>
