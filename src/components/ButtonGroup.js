@@ -1,16 +1,14 @@
-import * as React from "react";
-import Button from "@mui/joy/Button";
-import { ButtonGroup as MuiButtonGroup } from "@mui/joy";
-import IconButton from "@mui/joy/IconButton";
-import Settings from "@mui/icons-material/Settings";
+import * as React from "react"
+import Button from "@mui/joy/Button"
+import { ButtonGroup as MuiButtonGroup } from "@mui/joy"
 
 export default function ButtonGroup(props) {
-  const { currentChartType, setCurrentChartType } = props;
+  const { chartType, setChartType } = props
 
   const handleClick = (chartType) => {
-    setCurrentChartType(chartType);
-  };
-  console.log("currentChartType", currentChartType);
+    setChartType(chartType)
+  }
+
   return (
     <MuiButtonGroup
       aria-label="radius button group"
@@ -19,12 +17,12 @@ export default function ButtonGroup(props) {
       {["D", "M", "Y", "All"].map((label) => (
         <Button
           key={label}
-          className={`button ${currentChartType === label ? "active" : ""}`}
+          className={`button ${chartType === label ? "active" : ""}`}
           onClick={() => handleClick(label)}
         >
           {label}
         </Button>
       ))}
     </MuiButtonGroup>
-  );
+  )
 }
