@@ -11,14 +11,14 @@ body {
 }
 
 /* .App > div {
-    border: 1px black solid;
-}
+      border: 1px black solid;
+  }
+  
+  .App > div > * {
+      border: 1px blue solid;
+  } */
 
-.App > div > * {
-    border: 1px blue solid;
-} */
-
-.App {
+.HomePage {
   /* border: 3px green solid; */
   display: flex;
   flex-direction: column;
@@ -44,29 +44,29 @@ body {
 }
 
 .body2 {
-  height: 200px;
   /* border: 1px black solid; */
   border-radius: 10px;
   padding: 20px;
   background-color: white;
+  box-sizing: content-box;
 }
 
 .logo,
 .userActions {
   font-size: 36px;
   /* display: flex;
-    justify-content: center;
-    align-items: center; */
+      justify-content: center;
+      align-items: center; */
 }
 
 /* Responsive adjustments 
-@media (max-width: 768px) {
-    .header {
-        grid-template-columns: 1fr;
-    }
-
-    .body1 {
-        grid-template-columns: 1fr;
-    }
-}
-*/
+  @media (max-width: 768px) {
+      .header {
+          grid-template-columns: 1fr;
+      }
+  
+      .body1 {
+          grid-template-columns: 1fr;
+      }
+  }
+  */

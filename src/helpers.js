@@ -28,6 +28,9 @@ export function convertKBTUToWh(kBtu) {
   return wh
 }
 
+export function convertWhTokWh(value) {
+  return (value * 0.001).toFixed(1)
+}
 export function formatEnergyValue(wh) {
   if (wh >= 1_000_000_000_000) {
     // TWh
