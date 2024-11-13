@@ -68,8 +68,8 @@ function App() {
     loadingChartData,
     setLoadingChartData,
     setChartData,
-    setMessage,
-    setOpenSnackbar,
+    // setMessage,
+    // setOpenSnackbar,
     setLoadingSites,
     setQuickInsights,
     setSelectedQuickInsightsType,
@@ -77,11 +77,9 @@ function App() {
     setLoadingQuickInsights,
     selectedQuickInsightsType,
     quickInsights,
-    openSnackbar,
-    message,
+    // openSnackbar,
+    // message,
   }
-
-  console.log("FROM APP", selectedSite)
 
   return (
     <div className="App">

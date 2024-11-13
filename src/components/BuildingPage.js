@@ -9,6 +9,7 @@ import { MetaData } from "./MetaData"
 import { makeApiCall } from "../api"
 import { getDateTodayInString, stringifyError } from "../helpers"
 import { PositionedSnackbar } from "./Snackbar"
+import CryptoJS from "crypto-js"
 
 function Building(props) {
   const {
@@ -25,8 +26,8 @@ function Building(props) {
     loadingChartData,
     setLoadingChartData,
     setChartData,
-    setMessage,
-    setOpenSnackbar,
+    // setMessage,
+    // setOpenSnackbar,
     setLoadingSites,
     setQuickInsights,
     setSelectedQuickInsightsType,
@@ -34,16 +35,32 @@ function Building(props) {
     setLoadingQuickInsights,
     selectedQuickInsightsType,
     quickInsights,
-    openSnackbar,
-    message,
+    // openSnackbar,
+    // message,
   } = props
+
+  //error handling
+  const [openSnackbarBuilding, setOpenSnackbarBuilding] = useState(false)
+  const [messageBuilding, setMessageBuilding] = useState("I love snacks")
+
+  const [selectedSiteBuilding, setSelectedSiteBuilding] = useState(() => {
+    const userSelectedSide = localStorage.getItem("userSelectedSide")
+    return Object.keys(selectedSite).length > 0
+      ? selectedSite
+      : JSON.parse(
+          CryptoJS.AES.decrypt(
+            userSelectedSide,
+            process.env.REACT_APP_LOCAL_STORAGE_KEY
+          ).toString(CryptoJS.enc.Utf8)
+        )
+  })
 
   const generateChartData = () => {
     setLoadingChartData(true)
     const params = {
       chart_type: chartType,
       chart_date: chartDate,
-      id: selectedSite.id,
+      id: selectedSiteBuilding.id,
     }
     makeApiCall("/chart_data", params)
       .then((data) => {
@@ -51,8 +68,8 @@ function Building(props) {
         setChartData(data)
       })
       .catch((error) => {
-        setMessage(stringifyError(error))
-        setOpenSnackbar(true)
+        setMessageBuilding(stringifyError(error))
+        setOpenSnackbarBuilding(true)
       })
       .finally(() => {
         setLoadingChartData(false)
@@ -62,7 +79,7 @@ function Building(props) {
   const generateQuickInsights = (selectedType) => {
     setLoadingQuickInsights(true)
     const params = {
-      id: selectedSite.id,
+      id: selectedSiteBuilding.id,
       type: selectedType,
     }
     makeApiCall("/quick_insights", params)
@@ -73,8 +90,8 @@ function Building(props) {
       .catch((error) => {
         console.log("ERROR QUICK INSIGHT")
 
-        setMessage(stringifyError(error))
-        setOpenSnackbar(true)
+        setMessageBuilding(stringifyError(error))
+        setOpenSnackbarBuilding(true)
       })
       .finally(() => {
         setLoadingQuickInsights(false)
@@ -82,18 +99,23 @@ function Building(props) {
   }
 
   useEffect(() => {
-    if (!Object.keys(selectedSite).length) {
+    if (!Object.keys(selectedSiteBuilding).length) {
+      console.log("NO selectedSite", selectedSiteBuilding)
       return
     }
-
+    const ciphertext = CryptoJS.AES.encrypt(
+      JSON.stringify(selectedSiteBuilding),
+      process.env.REACT_APP_LOCAL_STORAGE_KEY
+    ).toString()
+    localStorage.setItem("userSelectedSide", ciphertext)
     // default to "solar" if there's solar_edge data for this site. Otherwise, this site only has energy_star data, so default to electric
-    const defaultQuickInsightsType = selectedSite.id_solar_edge
+    const defaultQuickInsightsType = selectedSiteBuilding.id_solar_edge
       ? "solar"
       : "electric"
     setSelectedQuickInsightsType(defaultQuickInsightsType)
     generateQuickInsights(defaultQuickInsightsType)
     generateChartData()
-  }, [selectedSite])
+  }, [selectedSiteBuilding])
 
   const myChartProps = {
     chartType,
@@ -114,25 +136,23 @@ function Building(props) {
   }
 
   const metadataProps = {
-    selectedSite,
+    selectedSiteBuilding,
   }
 
   const searchBarProps = {
     sites,
-    selectedSite,
-    setSelectedSite,
+    selectedSiteBuilding,
+    setSelectedSiteBuilding,
     loadingSites,
     loadingQuickInsights,
     loadingChartData,
   }
 
   const snackBarProps = {
-    openSnackbar,
-    setOpenSnackbar,
-    message,
+    openSnackbarBuilding,
+    setOpenSnackbarBuilding,
+    messageBuilding,
   }
-
-  console.log("building", selectedSite)
 
   return (
     <div className="App">

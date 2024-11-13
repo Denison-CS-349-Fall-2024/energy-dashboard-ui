@@ -151,7 +151,9 @@ export default function HomePage(props) {
         // default to Denison (all) site
         const defaultSite = formatted_sites.filter(
           (site) =>
-            site.id_energy_star == 28509337 && site.id_solar_edge === null
+            site.id_energy_star ==
+              parseInt(process.env.REACT_APP_HOMEPAGE_ID) &&
+            site.id_solar_edge === null
         )
         setSelectedSite(defaultSite[0])
       })
