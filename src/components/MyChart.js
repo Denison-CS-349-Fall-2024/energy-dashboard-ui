@@ -1,32 +1,28 @@
-import React, { useState } from "react";
-import ToggleButtonGroup from "./ButtonGroup.js";
-import "./MyChart.js";
-import { TimePicker } from "./TimePicker.js";
-import "./MyChart.css";
-import { EnergyLineChart } from "./EnergyLineChart.js";
-import { EnergyBarChart } from "./EnergyBarChart.js";
+import React from "react"
+import ButtonGroup from "./ButtonGroup.js"
+import "./MyChart.js"
+import { TimePicker } from "./TimePicker.js"
+import "./MyChart.css"
+import { EnergyLineChart } from "./EnergyLineChart.js"
+import Button from "@mui/joy/Button"
 
 export const MyChart = (props) => {
-  const {
-    sampleData,
-    currentChartType,
-    setCurrentChartType,
-    chartTime,
-    setChartTime,
-  } = props;
+  const { chartData, generateChartData, loadingChartData } = props
+
   return (
     <div className="chart-container">
       <div className="control-panel">
-        <ToggleButtonGroup {...props}></ToggleButtonGroup>
+        <ButtonGroup {...props}></ButtonGroup>
         <TimePicker {...props}></TimePicker>
-        <button className="apply-button">Apply</button>
+        <Button onClick={generateChartData} loading={loadingChartData}>
+          Apply
+        </Button>
       </div>
 
-      {["D", "M"].includes(currentChartType) ? (
-        <EnergyLineChart dataset={sampleData} {...props} />
-      ) : (
-        <EnergyBarChart dataset={sampleData} {...props} />
-      )}
+      <EnergyLineChart
+        dataSources={chartData.sources || []}
+        chartType={chartData.chart_type}
+      />
     </div>
-  );
-};
+  )
+}

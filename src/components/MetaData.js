@@ -1,13 +1,13 @@
-import "./MetaData.css";
+import "./MetaData.css"
 
 export const MetaData = (props) => {
-  const { selectedSite } = props;
+  const { selectedSiteBuilding } = props
   return (
     <div className="metadata-container">
-      <h2>{selectedSite.siteName}</h2>
+      <h2>{selectedSiteBuilding.internal_name}</h2>
       <div className="image-container">
-        <img src={selectedSite.imageUrl}></img>
+        <img src={selectedSiteBuilding.site_image_url}></img>
       </div>
     </div>
-  );
-};
+  )
+}

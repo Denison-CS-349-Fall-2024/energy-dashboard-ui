@@ -1,117 +1,161 @@
 import "../css/Building.css"
 import { useEffect, useState } from "react"
+import { useLocation } from "react-router-dom"
 import { SearchBar } from "./SearchBar"
 import { QuickInsights } from "./QuickInsights"
 import { MyChart } from "./MyChart"
 import React from "react"
 import { MetaData } from "./MetaData"
-import { getQuickInsights, getSampleData, getSites } from "../api"
+import { makeApiCall } from "../api"
+import { getDateTodayInString, stringifyError } from "../helpers"
+import { PositionedSnackbar } from "./Snackbar"
+import CryptoJS from "crypto-js"
 
-function BuildingPage() {
-  const [selectedSite, setSelectedSite] = useState({})
-  const [sites, setSites] = useState([])
-  const [quickInsightsTypes, setQuickInsightsTypes] = useState([])
-  const [selectedQuickInsightsId, setSelectedQuickInsightsId] = useState(null)
-  const [quickInsights, setQuickInsights] = useState({})
+function Building(props) {
+  const {
+    sites,
+    selectedSite,
+    setSelectedSite,
+    loadingSites,
+    loadingQuickInsights,
+    chartType,
+    setChartType,
+    chartDate,
+    setChartDate,
+    chartData,
+    loadingChartData,
+    setLoadingChartData,
+    setChartData,
+    // setMessage,
+    // setOpenSnackbar,
+    setLoadingSites,
+    setQuickInsights,
+    setSelectedQuickInsightsType,
+    setSites,
+    setLoadingQuickInsights,
+    selectedQuickInsightsType,
+    quickInsights,
+    // openSnackbar,
+    // message,
+  } = props
 
-  const [currentChartType, setCurrentChartType] = useState("M")
-  const [chartTime, setChartTime] = useState("2024/10")
+  //error handling
+  const [openSnackbarBuilding, setOpenSnackbarBuilding] = useState(false)
+  const [messageBuilding, setMessageBuilding] = useState("I love snacks")
 
-  const [sampleData, setSampleData] = useState([])
+  const [selectedSiteBuilding, setSelectedSiteBuilding] = useState(() => {
+    const userSelectedSide = localStorage.getItem("userSelectedSide")
+    return Object.keys(selectedSite).length > 0
+      ? selectedSite
+      : JSON.parse(
+          CryptoJS.AES.decrypt(
+            userSelectedSide,
+            process.env.REACT_APP_LOCAL_STORAGE_KEY
+          ).toString(CryptoJS.enc.Utf8)
+        )
+  })
+
+  const generateChartData = () => {
+    setLoadingChartData(true)
+    const params = {
+      chart_type: chartType,
+      chart_date: chartDate,
+      id: selectedSiteBuilding.id,
+    }
+    makeApiCall("/chart_data", params)
+      .then((data) => {
+        console.log("makeApiCall(chart_data)", data)
+        setChartData(data)
+      })
+      .catch((error) => {
+        setMessageBuilding(stringifyError(error))
+        setOpenSnackbarBuilding(true)
+      })
+      .finally(() => {
+        setLoadingChartData(false)
+      })
+  }
+
+  const generateQuickInsights = (selectedType) => {
+    setLoadingQuickInsights(true)
+    const params = {
+      id: selectedSiteBuilding.id,
+      type: selectedType,
+    }
+    makeApiCall("/quick_insights", params)
+      .then((data) => {
+        setQuickInsights(data)
+        console.log("makeApiCall(quick_insights)", data)
+      })
+      .catch((error) => {
+        console.log("ERROR QUICK INSIGHT")
+
+        setMessageBuilding(stringifyError(error))
+        setOpenSnackbarBuilding(true)
+      })
+      .finally(() => {
+        setLoadingQuickInsights(false)
+      })
+  }
+
+  useEffect(() => {
+    if (!Object.keys(selectedSiteBuilding).length) {
+      console.log("NO selectedSite", selectedSiteBuilding)
+      return
+    }
+    const ciphertext = CryptoJS.AES.encrypt(
+      JSON.stringify(selectedSiteBuilding),
+      process.env.REACT_APP_LOCAL_STORAGE_KEY
+    ).toString()
+    localStorage.setItem("userSelectedSide", ciphertext)
+    // default to "solar" if there's solar_edge data for this site. Otherwise, this site only has energy_star data, so default to electric
+    const defaultQuickInsightsType = selectedSiteBuilding.id_solar_edge
+      ? "solar"
+      : "electric"
+    setSelectedQuickInsightsType(defaultQuickInsightsType)
+    generateQuickInsights(defaultQuickInsightsType)
+    generateChartData()
+  }, [selectedSiteBuilding])
 
   const myChartProps = {
-    currentChartType,
-    setCurrentChartType,
-    chartTime,
-    setChartTime,
-    sampleData,
+    chartType,
+    setChartType,
+    chartDate,
+    setChartDate,
+    chartData,
+    generateChartData,
+    loadingChartData,
+    setLoadingChartData,
   }
 
   const quickInsightsProps = {
     quickInsights,
-    quickInsightsTypes,
-    selectedQuickInsightsId,
-    setSelectedQuickInsightsId,
+    selectedQuickInsightsType,
+    setSelectedQuickInsightsType,
+    loadingQuickInsights,
   }
 
   const metadataProps = {
-    selectedSite,
+    selectedSiteBuilding,
   }
 
   const searchBarProps = {
     sites,
-    selectedSite,
-    setSelectedSite,
+    selectedSiteBuilding,
+    setSelectedSiteBuilding,
+    loadingSites,
+    loadingQuickInsights,
+    loadingChartData,
   }
 
-  const inferQuickInsightsTypes = (site) => {
-    const available_data_types = []
-    if (site.solarEdgeId) {
-      available_data_types.push({
-        id: "solar" + "," + site.solarEdgeId,
-        label: "Solar",
-        value: site.solarEdgeId,
-      })
-    }
-
-    if (site.energyStarId) {
-      available_data_types.push({
-        id: "electricgrid" + "," + site.energyStarId,
-        label: "Electric - Grid",
-        value: site.energyStarId,
-      })
-
-      available_data_types.push({
-        id: "naturalgas" + "," + site.energyStarId,
-        label: "Natural Gas",
-        value: site.energyStarId,
-      })
-    }
-
-    setQuickInsightsTypes(available_data_types)
-    setSelectedQuickInsightsId(available_data_types[0].id)
+  const snackBarProps = {
+    openSnackbarBuilding,
+    setOpenSnackbarBuilding,
+    messageBuilding,
   }
-
-  useEffect(() => {
-    getSites().then((sites) => {
-      setSites(sites)
-      const firstSite = sites[0]
-      setSelectedSite(firstSite)
-      inferQuickInsightsTypes(firstSite)
-      getQuickInsights().then((data) => {
-        setQuickInsights(data)
-      })
-      setSampleData(getSampleData())
-    })
-  }, [])
-
-  useEffect(() => {
-    if (selectedSite && Object.keys(selectedSite).length) {
-      console.log("selectedSite:", selectedSite)
-      inferQuickInsightsTypes(selectedSite)
-      getQuickInsights().then((data) => {
-        setQuickInsights(data)
-      })
-      setSampleData(getSampleData())
-    }
-  }, [selectedSite])
-
-  useEffect(() => {
-    if (selectedQuickInsightsId) {
-      console.log("selectedQuickInsightsId", selectedQuickInsightsId)
-      getQuickInsights().then((data) => {
-        setQuickInsights(data)
-      })
-    }
-  }, [selectedQuickInsightsId])
 
   return (
     <div className="App">
-      <div className="header">
-        <h1 className="logo">Dashboard</h1>
-        <SearchBar {...searchBarProps}></SearchBar>
-        <div className="userActions">Login (todo)</div>
-      </div>
       <div className="body1">
         <QuickInsights {...quickInsightsProps}></QuickInsights>
         <MetaData {...metadataProps}></MetaData>
@@ -119,8 +163,11 @@ function BuildingPage() {
       <div className="body2">
         <MyChart {...myChartProps}></MyChart>
       </div>
+      <div className="footer">
+        <PositionedSnackbar {...snackBarProps}></PositionedSnackbar>
+      </div>
     </div>
   )
 }
 
-export default BuildingPage
+export default Building
