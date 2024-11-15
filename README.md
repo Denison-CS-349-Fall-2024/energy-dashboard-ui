@@ -1,6 +1,6 @@
 # energy-dashboard-ui
 
-## Set up README.rd
+## Set up README.md
 
 1. Reach out to Loc or Duc for .env content
 
