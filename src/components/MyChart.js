@@ -23,6 +23,8 @@ export const MyChart = (props) => {
         dataSources={chartData.sources || []}
         chartType={chartData.chart_type}
       />
+      <div style={{ "text-align": "center" }}>1 kBtu = 0.293071 kWh</div>
+      <div style={{ "text-align": "center" }}>1 kWh = 3.412141633 kBtu</div>
     </div>
   )
 }
