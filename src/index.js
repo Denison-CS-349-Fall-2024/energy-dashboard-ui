@@ -7,6 +7,7 @@ import {
   Route,
   BrowserRouter,
 } from "react-router-dom"
+import "./AuthPage.css"
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
@@ -15,3 +16,4 @@ root.render(
     <App />
   </BrowserRouter>
 )
+
