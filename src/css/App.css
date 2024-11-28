@@ -1,0 +1,35 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  color: #1a1a3f;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9fafb;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 10px 30px;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 50px;
+  border-radius: 10px;
+  padding: 10px 30px;
+  background-color: white;
+}
+
+.logo * {
+  font-size: 36px;
+}
+
+.logo h3, .logo img {
+  cursor: pointer;
+}

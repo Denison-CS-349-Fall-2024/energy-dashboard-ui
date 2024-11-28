@@ -1,0 +1,27 @@
+.home-container {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  border-radius: 10px;
+  gap: 30px;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.campus-overview-container {
+  border-radius: 10px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  padding: 10px 30px;
+}
+
+.environmental-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}

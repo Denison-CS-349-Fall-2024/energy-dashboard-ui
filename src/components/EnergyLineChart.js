@@ -10,7 +10,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js"
-import { getDataSets, getLabels } from "../helpers"
+import { getDataSets, getLabels, truncateZeros } from "../helpers"
 
 ChartJS.register(
   CategoryScale,
@@ -55,22 +55,14 @@ export const EnergyLineChart = ({ dataSources, chartType }) => {
           display: true,
           text: dataSources[0]?.energy_unit,
         },
+        ticks: {
+          callback: function (value) {
+            return truncateZeros(value) // Use the formatter here
+          },
+        },
       },
     },
   }
 
   return <Line data={chartData} options={options} />
 }
-
-// const getColor = (label) => {
-//   switch (label) {
-//     case "natural gas":
-//       return "#0395FF"
-//     case "solar":
-//       return "#00E096"
-//     case "electric - grid":
-//       return "#8A00FF"
-//     default:
-//       return "rgba(255, 99, 132, 0.6)"
-//   }
-// }

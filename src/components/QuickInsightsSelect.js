@@ -27,9 +27,7 @@ const QuickInsightsSelect = (props) => {
           flexWrap: "wrap",
         }}
       >
-        <CircularProgress
-          variant="solid"
-        />
+        <CircularProgress variant="solid" />
       </Box>
     )
   }
@@ -43,8 +41,8 @@ const QuickInsightsSelect = (props) => {
       <Option value="solar" disabled={!quickInsights.id_solar_edge}>
         Solar
       </Option>
-      <Option value="electric" disabled={!quickInsights.id_energy_star}>
-        Electric
+      <Option value="electric_grid" disabled={!quickInsights.id_energy_star}>
+        Electric Grid
       </Option>
       <Option value="natural_gas" disabled={!quickInsights.id_energy_star}>
         Natural Gas

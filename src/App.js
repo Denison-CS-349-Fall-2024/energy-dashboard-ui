@@ -1,31 +1,54 @@
-import "./App.css"
+import "./css/App.css"
 import { useEffect, useState } from "react"
 import { SearchBar } from "./components/SearchBar"
-import { QuickInsights } from "./components/QuickInsights"
-import { MyChart } from "./components/MyChart"
 import React from "react"
-import { MetaData } from "./components/MetaData"
 import { makeApiCall } from "./api"
-import { getDateTodayInString, stringifyError } from "./helpers"
+import {
+  formatCampusOverviewData,
+  getDateTodayInString,
+  HOME_SITE,
+  stringifyError,
+} from "./helpers"
+import Home from "./components/Home"
+import Site from "./components/Site"
+import DenisonLogo from "./icons/DenisonLogo.png"
+import { Box } from "@mui/joy"
 import { PositionedSnackbar } from "./components/Snackbar"
+import { Switch } from "./components/Switch"
 
 function App() {
+  const [isHome, setIsHome] = useState(true)
   const [sites, setSites] = useState([])
-  const [selectedSite, setSelectedSite] = useState({})
+  const [selectedSite, setSelectedSite] = useState(HOME_SITE)
   const [loadingSites, setLoadingSites] = useState(false)
 
   const [quickInsights, setQuickInsights] = useState({})
   const [selectedQuickInsightsType, setSelectedQuickInsightsType] =
     useState(null)
   const [loadingQuickInsights, setLoadingQuickInsights] = useState(false)
+  const [campusOverviewData, setCampusOverviewData] = useState({})
+  const [campusEnvBenefitsData, setCampusEnvBenefitsData] = useState({})
 
   const [chartDate, setChartDate] = useState(getDateTodayInString())
-  const [chartType, setChartType] = useState("Y")
+  const [chartType, setChartType] = useState("All")
   const [chartData, setChartData] = useState({})
   const [loadingChartData, setLoadingChartData] = useState(false)
 
   const [openSnackbar, setOpenSnackbar] = useState(false)
-  const [message, setMessage] = useState("I love snacks")
+  const [snackMessage, setSnackMessage] = useState("I love snacks")
+  const [energyUnitPref, setEnergyUnitPref] = useState(
+    localStorage.getItem("energy_unit_pref") || "Wh"
+  )
+
+  const changeEnergyUnitPref = (event) => {
+    if (event.target.checked) {
+      setEnergyUnitPref("kBtu")
+      localStorage.setItem("energy_unit_pref", "kBtu")
+    } else {
+      setEnergyUnitPref("Wh")
+      localStorage.setItem("energy_unit_pref", "Wh")
+    }
+  }
 
   const generateChartData = () => {
     setLoadingChartData(true)
@@ -36,11 +59,14 @@ function App() {
     }
     makeApiCall("/chart_data", params)
       .then((data) => {
-        console.log("makeApiCall(chart_data)", data)
         setChartData(data)
+        // only need to fetch campusOverviewData once for the entire app lifecycle
+        if (Object.keys(campusOverviewData).length === 0) {
+          setCampusOverviewData(formatCampusOverviewData(data))
+        }
       })
       .catch((error) => {
-        setMessage(stringifyError(error))
+        setSnackMessage(stringifyError(error))
         setOpenSnackbar(true)
       })
       .finally(() => {
@@ -57,10 +83,9 @@ function App() {
     makeApiCall("/quick_insights", params)
       .then((data) => {
         setQuickInsights(data)
-        console.log("makeApiCall(quick_insights)", data)
       })
       .catch((error) => {
-        setMessage(stringifyError(error))
+        setSnackMessage(stringifyError(error))
         setOpenSnackbar(true)
       })
       .finally(() => {
@@ -68,21 +93,35 @@ function App() {
       })
   }
 
+  const visitHome = () => {
+    setIsHome(true)
+    setSelectedSite(HOME_SITE)
+  }
+
   useEffect(() => {
     setLoadingSites(true)
     makeApiCall("/sites")
       .then((sites) => {
-        console.log("makeApiCall(sites)", sites)
         const formatted_sites = sites.map((site) => ({
           ...site,
           label: site.internal_name,
         }))
         setSites(formatted_sites)
-        // default to first site
-        setSelectedSite(sites[0])
       })
       .catch((error) => {
-        setMessage(stringifyError(error))
+        setSnackMessage(stringifyError(error))
+        setOpenSnackbar(true)
+      })
+      .finally(() => {
+        setLoadingSites(false)
+      })
+
+    makeApiCall("/campus_env_benefits")
+      .then((data) => {
+        setCampusEnvBenefitsData(data)
+      })
+      .catch((error) => {
+        setSnackMessage(stringifyError(error))
         setOpenSnackbar(true)
       })
       .finally(() => {
@@ -95,23 +134,42 @@ function App() {
       return
     }
 
-    // default to "solar" if there's solar_edge data for this site. Otherwise, this site only has energy_star data, so default to electric
-    const defaultQuickInsightsType = selectedSite.id_solar_edge
-      ? "solar"
-      : "electric"
-    setSelectedQuickInsightsType(defaultQuickInsightsType)
-    generateQuickInsights(defaultQuickInsightsType)
+    if (!isHome) {
+      // default to "solar" if there's solar_edge data for this site. Otherwise, this site only has energy_star data, so default to electric_grid
+      const defaultQuickInsightsType = selectedSite.id_solar_edge
+        ? "solar"
+        : "electric_grid"
+      setSelectedQuickInsightsType(defaultQuickInsightsType)
+      generateQuickInsights(defaultQuickInsightsType)
+    }
+
     generateChartData()
   }, [selectedSite])
 
   useEffect(() => {
-    if (!Object.keys(selectedSite).length || !selectedQuickInsightsType) {
+    if (
+      !Object.keys(selectedSite).length ||
+      !selectedQuickInsightsType ||
+      isHome
+    ) {
       return
     }
     generateQuickInsights(selectedQuickInsightsType)
   }, [selectedQuickInsightsType])
 
-  const myChartProps = {
+  const searchBarProps = {
+    sites,
+    selectedSite,
+    setSelectedSite,
+    loadingSites,
+    loadingQuickInsights,
+    setIsHome,
+  }
+
+  const props = {
+    energyUnitPref,
+    changeEnergyUnitPref,
+    // props that MyChart will use
     chartType,
     setChartType,
     chartDate,
@@ -120,50 +178,57 @@ function App() {
     generateChartData,
     loadingChartData,
     setLoadingChartData,
-  }
-
-  const quickInsightsProps = {
+    // props that QuickInsights will use
     quickInsights,
     selectedQuickInsightsType,
     setSelectedQuickInsightsType,
     loadingQuickInsights,
-  }
-
-  const metadataProps = {
+    // props that MetaData will use
     selectedSite,
-  }
-
-  const searchBarProps = {
-    sites,
-    selectedSite,
-    setSelectedSite,
-    loadingSites,
-    loadingQuickInsights,
-    loadingChartData
-  }
-
-  const snackBarProps = {
+    // props that PositionedSnackbar will use
+    loadingChartData,
     openSnackbar,
     setOpenSnackbar,
-    message,
+    snackMessage,
+    // props that Home will use
+    campusOverviewData,
+    campusEnvBenefitsData,
   }
 
   return (
     <div className="App">
       <div className="header">
-        <h1 className="logo">Dashboard</h1>
-        <SearchBar {...searchBarProps}></SearchBar>
-        <div className="userActions">Login (todo)</div>
+        <div className="logo" onClick={visitHome}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyItems: "center",
+            }}
+          >
+            <h3>Energy</h3>
+            <img src={DenisonLogo} height={50} style={{ marginLeft: "10px" }} />
+            <h3>ashboard</h3>
+          </Box>
+        </div>
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyItems: "center",
+            gap: "30px",
+          }}
+        >
+          <Switch {...props} />
+          <SearchBar {...searchBarProps}></SearchBar>
+        </Box>
       </div>
-      <div className="body1">
-        <QuickInsights {...quickInsightsProps}></QuickInsights>
-        <MetaData {...metadataProps}></MetaData>
-      </div>
-      <div className="body2">
-        <MyChart {...myChartProps}></MyChart>
-      </div>
+
+      {isHome ? <Home {...props}></Home> : <Site {...props}></Site>}
+
       <div className="footer">
-        <PositionedSnackbar {...snackBarProps}></PositionedSnackbar>
+        <PositionedSnackbar {...props}></PositionedSnackbar>
       </div>
     </div>
   )

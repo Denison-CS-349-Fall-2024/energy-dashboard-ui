@@ -2,7 +2,11 @@ import * as React from "react"
 import Box from "@mui/joy/Box"
 import Snackbar from "@mui/joy/Snackbar"
 
-export function PositionedSnackbar({ openSnackbar, setOpenSnackbar, message }) {
+export function PositionedSnackbar({
+  openSnackbar,
+  setOpenSnackbar,
+  snackMessage,
+}) {
   return (
     <Box sx={{ width: 500 }}>
       <Snackbar
@@ -13,10 +17,10 @@ export function PositionedSnackbar({ openSnackbar, setOpenSnackbar, message }) {
             setOpenSnackbar(false)
           }
         }}
-        variant="outlined"
+        variant="solid"
         color="danger"
       >
-        {message}
+        {snackMessage}
       </Snackbar>
     </Box>
   )

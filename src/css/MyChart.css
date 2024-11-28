@@ -1,8 +1,15 @@
+.chart-container {
+  padding: 10px 30px;
+  background-color: white;
+  border-radius: 10px;
+}
+
 .control-panel {
   display: flex;
   gap: 20px;
-  /* border: 1px red solid; */
   justify-content: right;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .button:hover {
