@@ -7,12 +7,13 @@ export const TimePicker = (props) => {
   const { chartType, chartDate, setChartDate } = props
 
   const chartTypeMap = {
-    D: "",
+    D: "date",
     M: "month",
     Y: "year",
   }
 
   const onChange = (date, dateString) => {
+    console.log("TimePicker value:", dateString)
     setChartDate(getFullDateInString(dateString))
   }
 
@@ -22,7 +23,7 @@ export const TimePicker = (props) => {
         defaultValue={dayjs(chartDate)}
         onChange={onChange}
         picker={chartTypeMap[chartType]}
-        disabled={chartType == "All"}
+        disabled={chartType === "All"}
       />
     </Space>
   )

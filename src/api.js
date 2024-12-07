@@ -11,7 +11,7 @@ function createFullUrl(baseUrl, endpoint, params) {
 }
 
 export async function makeApiCall(endpoint, params = {}) {
-  const baseUrl = "http://localhost:8000"
+  const baseUrl = "https://energy-dashboard-api-o69l.onrender.com"
 
   const response = await fetch(createFullUrl(baseUrl, endpoint, params))
   if (!response.ok) {
