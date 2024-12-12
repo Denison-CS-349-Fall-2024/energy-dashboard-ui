@@ -1,6 +1,7 @@
 import React from "react"
 import DownloadIcon from "@mui/icons-material/Download"
 import { IconButton } from "@mui/joy"
+import Tooltip from "@mui/joy/Tooltip"
 
 const DownloadCSVButton = ({ data, loadingChartData }) => {
   const convertToCSV = (jsonData) => {
@@ -64,14 +65,22 @@ const DownloadCSVButton = ({ data, loadingChartData }) => {
   }
 
   return (
-    <IconButton
-      aria-label="delete"
-      onClick={downloadCSV}
-      color="primary"
-      disabled={loadingChartData}
-    >
-      <DownloadIcon />
-    </IconButton>
+    <div>
+      <Tooltip
+        title="Download data source as csv for details"
+        placement="top"
+        variant="plain"
+      >
+        <IconButton
+          aria-label="delete"
+          onClick={downloadCSV}
+          color="primary"
+          disabled={loadingChartData}
+        >
+          <DownloadIcon />
+        </IconButton>
+      </Tooltip>
+    </div>
   )
 }
 

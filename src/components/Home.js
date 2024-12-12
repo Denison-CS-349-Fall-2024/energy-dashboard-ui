@@ -8,6 +8,8 @@ import { Grid } from "@mui/joy"
 import { EmissionSvg } from "../icons/EmissionSvg"
 import { PlantSvg } from "../icons/PlantSvg"
 import { SolarArraySvg } from "../icons/SolarArray"
+import Tooltip from "@mui/joy/Tooltip"
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined"
 
 export default function Home(props) {
   const { campusOverviewData, campusEnvBenefitsData, energyUnitPref } = props
@@ -21,7 +23,24 @@ export default function Home(props) {
     <div className="home-container">
       <div className="left-column">
         <div className="campus-overview-container">
-          <h2>Campus Overview</h2>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "5px",
+              justifyItems: "center",
+            }}
+          >
+            <h2>Campus Overview</h2>
+            <Tooltip
+              title="Only lifetime data shown"
+              placement="top"
+              variant="outlined"
+              color="warning"
+            >
+              <InfoOutlinedIcon />
+            </Tooltip>
+          </Box>
 
           <Grid container spacing={2}>
             <Grid item sm={6} md={4}>
@@ -150,9 +169,26 @@ export default function Home(props) {
           >
             <SolarArraySvg />
             <Box>
-              <Typography variant="h7" sx={{ fontWeight: "bold" }}>
-                Active Solar Sites
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  justifyItems: "center",
+                }}
+              >
+                <Typography variant="h7" sx={{ fontWeight: "bold" }}>
+                  Active Solar Sites
+                </Typography>
+                <Tooltip
+                  title='Not include solar sites that are inactive / not officially "turned on"'
+                  placement="top"
+                  variant="outlined"
+                  color="warning"
+                >
+                  <InfoOutlinedIcon />
+                </Tooltip>
+              </Box>
               <Typography
                 variant="h6"
                 sx={{ color: "green", fontWeight: "bold" }}
@@ -174,13 +210,30 @@ export default function Home(props) {
               backgroundColor: "white",
             }}
           >
+            <EmissionSvg />
+
             <Box>
-              <EmissionSvg />
-            </Box>
-            <Box>
-              <Typography variant="h7" sx={{ fontWeight: "bold" }}>
-                CO2 Emission Saved
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  justifyItems: "center",
+                }}
+              >
+                <Typography variant="h7" sx={{ fontWeight: "bold" }}>
+                  CO2 Emission Saved
+                </Typography>
+                <Tooltip
+                  title="Lifetime amount from all active solar sites"
+                  placement="top"
+                  variant="outlined"
+                  color="warning"
+                >
+                  <InfoOutlinedIcon />
+                </Tooltip>
+              </Box>
+
               <Typography
                 variant="h6"
                 sx={{ color: "green", fontWeight: "bold" }}
@@ -204,9 +257,26 @@ export default function Home(props) {
           >
             <PlantSvg />
             <Box>
-              <Typography variant="h7" sx={{ fontWeight: "bold" }}>
-                Equivalent Trees Planted
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  justifyItems: "center",
+                }}
+              >
+                <Typography variant="h7" sx={{ fontWeight: "bold" }}>
+                  Equiv Trees Planted
+                </Typography>
+                <Tooltip
+                  title="Lifetime amount from all active solar sites"
+                  placement="top"
+                  variant="outlined"
+                  color="warning"
+                >
+                  <InfoOutlinedIcon />
+                </Tooltip>
+              </Box>
               <Typography
                 variant="h6"
                 sx={{ color: "green", fontWeight: "bold" }}
